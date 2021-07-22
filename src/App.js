@@ -1,24 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import { ThemeProvider } from 'styled-components'
+import usePersistedState from './Hooks/usePersistedState';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-function App() {
+import dark from './Styles/Themes/dark'
+import light from './Styles/Themes/light'
+
+import { Header } from './Components/Header';
+import { GlobalStyle } from './Styles/global'
+import { Footer } from './Components/Footer';
+import { Login } from './Pages/Login';
+import { Home } from './Pages/Home';
+
+
+const App = () => {
+  const [theme, setTheme] = usePersistedState('theme', light)
+
+  const toggleTheme = () => {
+    setTheme(theme.title === 'light' ? dark : light)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <main className="App">
+          <Header toggleTheme={toggleTheme}/>
+          <Routes>
+            <Route path='/' element={<Home />}/>
+            <Route path='login/*' element={<Login />}/>
+          </Routes>
+          <Footer />
+        </main>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 
